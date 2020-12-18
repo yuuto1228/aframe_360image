@@ -1,25 +1,82 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.1.0/aframe.js"></script>
+    <script src="https://aframe.io/releases/0.7.0/aframe.js"></script>
+    <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script>
     <script src="https://unpkg.com/aframe-orbit-controls@1.2.0/dist/aframe-orbit-controls.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+
+    <style>
+    aside {
+      position: absolute;
+      top: 0;
+      left: 1em;
+      z-index: 1;
+      width: 30em;
+    }
+    </style>
+
   </head>
 
   <body>
+    <aside>
+      <h1 id=title>Flying Snow fox</h1>
+      <p>※雪を降らせるためにA-Frameのversionを0.7.0にしています。</p>
+    </aside>
     <a-scene>
 
       <a-assets>
         <img id="winterIMG" src="winter.jpg">
       </a-assets>
-
-      <!-- <a-entity camera look-controls orbit-controls="target: 0 1.6 -0.5; maxPolarAngle:180; minDistance: 0.5; maxDistance: 20; initialPosition: 0 3 10"></a-entity> -->
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
-      <a-entity gltf-model="#tree" position="0 0 0"></a-entity>
-      <a-gltf-model id="test" src="Fox.gltf" position="0 0 -5" rotation="0 0 0" scale="0.02 0.02 0.02"></a-gltf-model>
+      <a-entity position="0 2.25 -15" particle-system="preset: snow; particleCount: 5000"></a-entity>
+      <a-entity position="0 2 0" rotation="0 0 0">
+        <a-entity camera look-controls wasd-controls="acceleration:300">
+        </a-entity>
+      </a-entity>
+      <a-gltf-model id="FOX" src="Fox.gltf" position="0 0 -5" rotation="0 0 0" scale="0.02 0.02 0.02" fox></a-gltf-model>
 
       <a-sky src="#winterIMG"></a-sky>
     </a-scene>
   </body>
 
+  <script>
+
+    AFRAME.registerComponent('fox', {
+      init: function () {
+        window.addEventListener('keydown', this.onKeyDown.bind(this))
+        window.addEventListener('keyup', this.onKeyUp.bind(this))
+        this.rotating = null
+        this.speeding = null
+        this.speed = 0.0
+      },
+      onKeyDown: function (e) {
+        if (e.keyCode == 65) {
+          d3.select("#FOX")//巻子化すると動かないのはなぜ？
+          .attr({
+              'rotation':"0 90 0",
+            })
+        } else if (e.keyCode == 68) {
+          d3.select("#FOX")
+          .attr({
+              'rotation':"0 270 0",
+            })
+        } else if (e.keyCode == 87) {
+          d3.select("#FOX")
+          .attr({
+              'rotation':"0 0 0",
+            })
+        } else if (e.keyCode == 83) {
+          d3.select("#FOX")
+          .attr({
+              'rotation':"0 180 0",
+            })
+        }
+      },
+      onKeyUp: function (e) {
+      }
+    })
+
+  </script>
 
 </html>
